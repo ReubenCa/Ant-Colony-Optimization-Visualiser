@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 
 public class SimulationManager : MonoBehaviour
@@ -8,6 +8,8 @@ public class SimulationManager : MonoBehaviour
     public  GameObject AntPrefab;
 
     public  GameObject CityPrefab;
+
+    public TextMeshProUGUI Besttext;
 
     public double MinPheremone = 0.1;
 
@@ -107,6 +109,15 @@ public class SimulationManager : MonoBehaviour
     public double PheromeDepositExponent;
 
 
+    public enum DepositMode
+    {
+        Standard,
+        BestIniterationOnly,
+        GlobalBestOnly
+    }
+
+    public DepositMode depositMode;
+
     private IEnumerator RunSimulation()
     {
         Debug.Log("Starting Simulation");
@@ -141,31 +152,61 @@ public class SimulationManager : MonoBehaviour
                 bestindex = i;
             }
         }
-
-
-        for(int i = 0; i < ants.Length; i++)
-        {
-        
-
-            double PheremoneDeposit =PhermoneDepositRate* System.Math.Pow((bestdistance / Distances[i]), PheromeDepositExponent );
-
-           for(int j = 0; j < Routes[i].Count-1; j++)
-            {
-                SetPhermone(Routes[i][j], Routes[i][j + 1], GetPhermone(Routes[i][j], Routes[i][j + 1]) + PheremoneDeposit);
-            }
-            SetPhermone(Routes[i][Routes[i].Count - 1], Routes[i][0], GetPhermone(Routes[i][Routes[i].Count - 1], Routes[i][0]) + PheremoneDeposit);
-
-        }   
-        if(bestdistance < bestDistanceSoFar)
+        //If a new city has been added since previous record the previous record is no longer valid
+        if (bestdistance < bestDistanceSoFar || cities.Length > BestSoFar.Count)
         {
             bestDistanceSoFar = bestdistance;
             BestSoFar = Routes[bestindex];
             lineRenderer.positionCount = BestSoFar.Count;
-            for(int i = 0; i < BestSoFar.Count; i++)
+            for (int i = 0; i < BestSoFar.Count; i++)
             {
                 lineRenderer.SetPosition(i, BestSoFar[i].transform.position);
             }
+         
+           Besttext.text = "Best Distance: " + (int)bestDistanceSoFar;
         }
+
+        if (depositMode == DepositMode.Standard)
+        {
+            for (int i = 0; i < ants.Length; i++)
+            {
+
+
+                double PheremoneDeposit = PhermoneDepositRate * System.Math.Pow((bestdistance / Distances[i]), PheromeDepositExponent);
+
+                for (int j = 0; j < Routes[i].Count - 1; j++)
+                {
+                    SetPhermone(Routes[i][j], Routes[i][j + 1], GetPhermone(Routes[i][j], Routes[i][j + 1]) + PheremoneDeposit);
+                }
+                SetPhermone(Routes[i][Routes[i].Count - 1], Routes[i][0], GetPhermone(Routes[i][Routes[i].Count - 1], Routes[i][0]) + PheremoneDeposit);
+
+            }
+        }
+        else if(depositMode == DepositMode.BestIniterationOnly)
+        {
+            double PheremoneDeposit = PhermoneDepositRate;
+            int i = bestindex;
+            for (int j = 0; j < Routes[i].Count - 1; j++)
+            {
+                SetPhermone(Routes[i][j], Routes[i][j + 1], GetPhermone(Routes[i][j], Routes[i][j + 1]) + PheremoneDeposit);
+            }
+            SetPhermone(Routes[i][Routes[i].Count - 1], Routes[i][0], GetPhermone(Routes[i][Routes[i].Count - 1], Routes[i][0]) + PheremoneDeposit);
+        }
+        else if(depositMode == DepositMode.GlobalBestOnly)
+        {
+            double PheremoneDeposit = PhermoneDepositRate;
+            for (int j = 0; j < BestSoFar.Count - 1; j++)
+            {
+                SetPhermone(BestSoFar[j], BestSoFar[j + 1], GetPhermone(BestSoFar[j], BestSoFar[j + 1]) + PheremoneDeposit);
+            }
+            SetPhermone(BestSoFar[BestSoFar.Count - 1], BestSoFar[0], GetPhermone(BestSoFar[BestSoFar.Count - 1], BestSoFar[0]) + PheremoneDeposit);
+        }
+
+        else
+        {
+            throw new System.Exception("Unknown Deposit Mode");
+        }
+
 
 
         DecayPhermones();
@@ -204,12 +245,12 @@ public class SimulationManager : MonoBehaviour
         }
         Debug.Log("Finished Calculating Routes");
     }
-
+    
     private (double, List<City>) CalculateRoute(City[] cities)
     {
         double distance = 0;
         HashSet<City> VisitedCities = new HashSet<City>(cities.Length);
-        City CurrentCity = cities[0];
+        City CurrentCity = cities[System.Math.Min((int)(Random.value*cities.Length), cities.Length-1)];
         List<City> finalRoute = new List<City>(cities.Length);
         finalRoute.Add(CurrentCity);
         while (finalRoute.Count < cities.Length)

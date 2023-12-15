@@ -48,15 +48,16 @@ MonoBehaviour:
   AntPrefab: {fileID: 3090602713039639999, guid: 07f0d78fcb3a81e4a8aecefa8d0ce2d1, type: 3}
   CityPrefab: {fileID: 6952995322325827997, guid: a5e702887821a904da751890d2f38f87, type: 3}
   MinPheremone: 0.1
-  MaxPheremone: 100000000
-  AntSpeed: 8
+  MaxPheremone: 100
+  AntSpeed: 15
   TimeBetweenIterations: 1
-  NumberofAnts: 5
-  PhermoneDecayRate: 0.8
-  DistanceWeight: 1
+  NumberofAnts: 40
+  PhermoneDecayRate: 0.9
+  DistanceWeight: 2
   PhermoneWeight: 1
   PhermoneDepositRate: 1
-  PheromeDepositExponent: 3
+  PheromeDepositExponent: 8
+  depositMode: 2
 --- !u!120 &7724616035265028351
 LineRenderer:
   serializedVersion: 2
