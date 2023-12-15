@@ -11,12 +11,15 @@ public class Ant : MonoBehaviour
         StopAllCoroutines();
         //start walk coroutine
         StartCoroutine(Walk(path, speed));
+
+        
     }
 
     private IEnumerator Walk(Queue<City> route, double speed)
     {
       //  Debug.Log("Walking");
         City nextCity = route.Dequeue();
+        route.Enqueue(nextCity); //Makes ant finish back at start
         transform.position = nextCity.transform.position;
         while(true)
         {
@@ -29,7 +32,11 @@ public class Ant : MonoBehaviour
                     transform.position = nextCity.transform.position;
                     distanceleftthisframe -= distancefromtarget;
                     if (route.Count == 0)
+                    {
+                        Destroy(gameObject);
                         yield break;
+                       
+                    }
                     nextCity = route.Dequeue();
                   //  Debug.Log("Next city: " + nextCity.ID);
                 }
