@@ -41,12 +41,46 @@ public class SimulationManager : MonoBehaviour
             throw new System.Exception("Tried to create multiple Simulation Managers");
     }
 
-
+    City cityBeingDragged;
+    private bool started = false;
     private void Update()
     {
-         if (!Input.GetKeyDown(KeyCode.Space))
-            return;
-         StartCoroutine(RunSimulation());
+         if (Input.GetKeyDown(KeyCode.Space) && !started)
+        {
+            started = true;
+            StartCoroutine(RunSimulation());
+        }
+        if (Input.GetMouseButtonDown(0) && cityBeingDragged == null)
+        {
+            Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hitCollider = Physics2D.OverlapPoint(clickPos);
+            if (hitCollider != null && hitCollider.CompareTag("City"))
+            {
+               
+                    City city = hitCollider.GetComponent<City>();
+                    cityBeingDragged = city;
+                
+            }
+        }
+        if (cityBeingDragged != null)
+        {
+            cityBeingDragged.transform.position =
+                new Vector3(
+                Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
+                Camera.main.ScreenToWorldPoint(Input.mousePosition).y,
+                0
+                );
+            
+            Debug.Log("Moved To" + cityBeingDragged.transform.position);
+        }
+        if (Input.GetMouseButtonUp(0) && cityBeingDragged != null)
+        {
+        
+            recordValid = false;
+            cityBeingDragged.currentPosition = cityBeingDragged.transform.position;
+            cityBeingDragged = null;
+        }
+
     }
 
 
@@ -63,7 +97,7 @@ public class SimulationManager : MonoBehaviour
 
     public double GetDistance(City city1, City city2)
     {
-        return Vector3.Distance(city1.transform.position, city2.transform.position);
+        return Vector3.Distance(city1.currentPosition, city2.currentPosition);
     }
 
     Dictionary<(int, int), double> Phermones = new();
@@ -130,6 +164,7 @@ public class SimulationManager : MonoBehaviour
 
         List<City> BestSoFar;
         double bestDistanceSoFar = double.MaxValue;
+        bool recordValid = false;
     private IEnumerator RunSingleIteration(int numberofants, City[] cities)
     {
         Ant[] ants = new Ant[numberofants];
@@ -153,14 +188,15 @@ public class SimulationManager : MonoBehaviour
             }
         }
         //If a new city has been added since previous record the previous record is no longer valid
-        if (bestdistance < bestDistanceSoFar || cities.Length > BestSoFar.Count)
+        if (bestdistance < bestDistanceSoFar ||  !recordValid)
         {
+            recordValid = true;
             bestDistanceSoFar = bestdistance;
             BestSoFar = Routes[bestindex];
             lineRenderer.positionCount = BestSoFar.Count;
             for (int i = 0; i < BestSoFar.Count; i++)
             {
-                lineRenderer.SetPosition(i, BestSoFar[i].transform.position);
+                lineRenderer.SetPosition(i, BestSoFar[i].currentPosition);
             }
          
            Besttext.text = "Best Distance: " + (int)bestDistanceSoFar;
@@ -282,5 +318,9 @@ public class SimulationManager : MonoBehaviour
         distance += GetDistance(finalRoute[finalRoute.Count - 1], finalRoute[0]);
         return (distance, finalRoute);
     }
- 
+
+
+
+  
+
 }

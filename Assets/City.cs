@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class City : MonoBehaviour
 {
+
+    public Vector3 currentPosition;
+
+
     // Start is called before the first frame update
     static private int nextID;
     public int ID
@@ -17,6 +21,7 @@ public class City : MonoBehaviour
     }
     void Start()
     {
+        currentPosition = transform.position;
         SimulationManager.instance.addCity(this);
     }
 
