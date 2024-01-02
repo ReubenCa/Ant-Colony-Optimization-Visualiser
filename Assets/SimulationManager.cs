@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SimulationManager : MonoBehaviour
 {
+    public SimulationState state = SimulationState.Stopped;
     public  GameObject AntPrefab;
 
     public  GameObject CityPrefab;
@@ -42,14 +43,42 @@ public class SimulationManager : MonoBehaviour
     }
 
     City cityBeingDragged;
-    private bool started = false;
+  
+
+   public void StopSimulation()
+    {
+        state = SimulationState.Stopped;
+        StopAllCoroutines();
+        foreach(Ant a in Ant.AllAnts)
+        {
+            Destroy(a.gameObject);
+        }
+        Ant.AllAnts.Clear();
+        
+    }
+
+ 
+    public void StartorResumeSimulation()
+    {
+        if (state == SimulationState.Stopped)
+        {
+            state = SimulationState.Running;
+            StartCoroutine(RunSimulation());
+            
+        }  
+        else
+        {
+            state = SimulationState.Running;
+        }
+    }
+
+    public void PauseSimulation()
+    {
+        state = SimulationState.Paused;
+    }
     private void Update()
     {
-         if (Input.GetKeyDown(KeyCode.Space) && !started)
-        {
-            started = true;
-            StartCoroutine(RunSimulation());
-        }
+        
         if (Input.GetMouseButtonDown(0) && cityBeingDragged == null)
         {
             Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -100,7 +129,7 @@ public class SimulationManager : MonoBehaviour
         return Vector3.Distance(city1.currentPosition, city2.currentPosition);
     }
 
-    Dictionary<(int, int), double> Phermones = new();
+    Dictionary<(int, int), double> Phermones;
 
 
     private double GetPhermone(City city1, City city2)
@@ -155,10 +184,15 @@ public class SimulationManager : MonoBehaviour
     private IEnumerator RunSimulation()
     {
         Debug.Log("Starting Simulation");
-        while(true)
+        Phermones = new Dictionary<(int, int), double>(LiveCityList.Count * (LiveCityList.Count -1));
+        while(state != SimulationState.Stopped)
         {
             StartCoroutine(RunSingleIteration(NumberofAnts,  LiveCityList.ToArray()));
             yield return new WaitForSeconds((float)TimeBetweenIterations);
+            if(state == SimulationState.Paused)
+            {
+                yield return new WaitUntil(() => state == SimulationState.Running);    
+            }
         }
     }
 
@@ -320,7 +354,11 @@ public class SimulationManager : MonoBehaviour
     }
 
 
+}
 
-  
-
+public enum SimulationState
+{
+    Stopped,
+    Running,
+    Paused
 }

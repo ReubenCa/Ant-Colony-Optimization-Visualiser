@@ -7,10 +7,14 @@ using UnityEngine;
 
 public class Ant : MonoBehaviour
 {
-
+     public static List<Ant> AllAnts = new List<Ant>();
     public void Start()
     {
-      
+        AllAnts.Add(this);
+    }
+    public void OnDestroy()
+    {
+        AllAnts.Remove(this);
     }
     public void WalkPath(Queue<City> path, double speed)
     {
@@ -37,6 +41,10 @@ public class Ant : MonoBehaviour
         transform.position = nextDestination;
         while (true)
         {
+            if(SimulationManager.instance.state == SimulationState.Paused)
+            {
+                yield return (new WaitUntil(() => SimulationManager.instance.state == SimulationState.Running));
+            }
             double distanceleftthisframe = speed * Time.deltaTime;
           //  Debug.Log("Distance left this frame: " + distanceleftthisframe);
             while(distanceleftthisframe >0) { 
