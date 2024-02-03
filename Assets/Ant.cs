@@ -7,6 +7,16 @@ using UnityEngine;
 
 public class Ant : MonoBehaviour
 {
+    const bool HighlightLastRun = true;
+    SpriteRenderer _spriteRenderer;
+    SpriteRenderer spriteRenderer
+    {
+        get
+        { if (_spriteRenderer == null)
+            { _spriteRenderer = GetComponent<SpriteRenderer>(); }
+        return _spriteRenderer;
+        }
+    }
      public static List<Ant> AllAnts = new List<Ant>();
     public void Start()
     {
@@ -59,6 +69,10 @@ public class Ant : MonoBehaviour
                         yield break;                       
                     }
                     nextDestination = positions.Dequeue();
+                    if(HighlightLastRun && positions.Count <= 5)
+                    {
+                        this.spriteRenderer.color = Color.green;
+                    }
                   //  Debug.Log("Next city: " + nextCity.ID);
                 }
                 else

@@ -296,7 +296,10 @@ public class SimulationManager : MonoBehaviour
             yield return null;
         }
     }
+    private void DrawPhermoneWeights()
+    {
 
+    }
     private IEnumerator CalculateRoutes(double[] Distances, List<City>[] Routes, int NumerOfFrames, int numberofants, City[] cities)
     {
         Debug.Log("Calculating Routes");
