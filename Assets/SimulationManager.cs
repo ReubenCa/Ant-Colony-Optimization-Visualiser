@@ -169,7 +169,7 @@ public class SimulationManager : MonoBehaviour
     public double DistanceWeight;
     public double PhermoneWeight;
     public double PhermoneDepositRate;
-    public double PheromeDepositExponent;
+    public double PhermoneDepositExponent;
 
 
     public enum DepositMode
@@ -208,7 +208,7 @@ public class SimulationManager : MonoBehaviour
         yield return StartCoroutine(CalculateRoutes(Distances, Routes, 16, numberofants, cities));
         for(int i = 0; i < ants.Length; i++)
         {
-            ants[i].WalkPath(new Queue<City>(Routes[i]), AntSpeed);
+            ants[i].WalkPath(new Queue<City>(Routes[i]));
         }
 
         int bestindex = 0;
@@ -242,7 +242,7 @@ public class SimulationManager : MonoBehaviour
             {
 
 
-                double PheremoneDeposit = PhermoneDepositRate * System.Math.Pow((bestdistance / Distances[i]), PheromeDepositExponent);
+                double PheremoneDeposit = PhermoneDepositRate * System.Math.Pow((bestdistance / Distances[i]), PhermoneDepositExponent);
 
                 for (int j = 0; j < Routes[i].Count - 1; j++)
                 {
@@ -290,7 +290,7 @@ public class SimulationManager : MonoBehaviour
         {
             for(int i = 0; i < antsperframe && antsdone < ants.Length; i++)
             {
-                ants[antsdone] = Instantiate(AntPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<Ant>();
+                ants[antsdone] = Instantiate(AntPrefab, new Vector3(0, 0, 0), Quaternion.identity, gameObject.transform).GetComponent<Ant>();
                 antsdone++;
             }
             yield return null;
@@ -328,13 +328,17 @@ public class SimulationManager : MonoBehaviour
             VisitedCities.Add(CurrentCity);
             double[] CityWeights = new double[cities.Length];
             double totalweight = 0;
+            int defaultindex = -1;//in case of floating point errors
             for (int i = 0; i < cities.Length; i++)
             {
-              
+
                 if (VisitedCities.Contains(cities[i]))
                     CityWeights[i] = 0;
                 else
+                {
                     CityWeights[i] = System.Math.Pow(GetPhermone(CurrentCity, cities[i]), PhermoneWeight) * System.Math.Pow(1 / GetDistance(CurrentCity, cities[i]), DistanceWeight);
+                    defaultindex = i;
+                }
                 totalweight += CityWeights[i];
             }
             double random = Random.Range(0, (float)totalweight);
@@ -345,6 +349,7 @@ public class SimulationManager : MonoBehaviour
                 currentcityindex++;
             }
             currentcityindex--;
+            currentcityindex = CityWeights[currentcityindex] != 0 ? currentcityindex : defaultindex;
             finalRoute.Add(cities[currentcityindex]);
             CurrentCity = cities[currentcityindex];
             distance += GetDistance(finalRoute[finalRoute.Count - 2], finalRoute[finalRoute.Count - 1]);

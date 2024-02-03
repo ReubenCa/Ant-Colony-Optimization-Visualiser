@@ -16,17 +16,17 @@ public class Ant : MonoBehaviour
     {
         AllAnts.Remove(this);
     }
-    public void WalkPath(Queue<City> path, double speed)
+    public void WalkPath(Queue<City> path)
     {
         //stop all previous walk coroutines
         StopAllCoroutines();
         //start walk coroutine
-        StartCoroutine(Walk(path, speed));
+        StartCoroutine(Walk(path));
 
         
     }
 
-    private IEnumerator Walk(Queue<City> route, double speed)
+    private IEnumerator Walk(Queue<City> route)
     {
       //  Debug.Log("Walking");
         
@@ -45,7 +45,7 @@ public class Ant : MonoBehaviour
             {
                 yield return (new WaitUntil(() => SimulationManager.instance.state == SimulationState.Running));
             }
-            double distanceleftthisframe = speed * Time.deltaTime;
+            double distanceleftthisframe = SimulationManager.instance.AntSpeed * Time.deltaTime;
           //  Debug.Log("Distance left this frame: " + distanceleftthisframe);
             while(distanceleftthisframe >0) { 
                 double distancefromtarget = Vector3.Distance(transform.position, nextDestination);
