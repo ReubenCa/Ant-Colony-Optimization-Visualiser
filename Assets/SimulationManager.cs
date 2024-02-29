@@ -79,7 +79,7 @@ public class SimulationManager : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.W) || state == SimulationState.Running)
+        if(state == SimulationState.Running)
         {
             DrawPhermoneWeights();
         }
