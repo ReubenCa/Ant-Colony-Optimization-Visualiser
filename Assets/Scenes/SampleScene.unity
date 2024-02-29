@@ -917,7 +917,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -985,8 +985,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b376514ad58894d8e17a1ec2af85d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 2.5
-  zoomSpeed: 2
+  panSpeed: 6
+  zoomSpeed: 3
   minY: -10
   maxY: 10
   minX: -10
@@ -1261,7 +1261,7 @@ GameObject:
   - component: {fileID: 756519462}
   - component: {fileID: 756519461}
   m_Layer: 5
-  m_Name: Button
+  m_Name: HideAntsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1308,7 +1308,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0, g: 0.1901753, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1330,7 +1330,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 756519462}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1296118624}
+        m_TargetAssemblyTypeName: UIButtons, Assembly-CSharp
+        m_MethodName: onHideAnts
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &756519462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4075,12 +4087,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1006731001796483465, guid: e47cca7248d060e42a04aed2a806062a, type: 3}
+      propertyPath: NumberofAnts
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006731001796483465, guid: e47cca7248d060e42a04aed2a806062a, type: 3}
       propertyPath: PhermoneWeight
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1006731001796483465, guid: e47cca7248d060e42a04aed2a806062a, type: 3}
       propertyPath: TimeBetweenIterations
-      value: 3
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7324407227187504708, guid: e47cca7248d060e42a04aed2a806062a, type: 3}
       propertyPath: m_LocalPosition.x

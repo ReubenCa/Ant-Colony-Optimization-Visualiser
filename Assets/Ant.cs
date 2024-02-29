@@ -9,7 +9,7 @@ public class Ant : MonoBehaviour
 {
     const bool HighlightLastRun = true;
     SpriteRenderer _spriteRenderer;
-    SpriteRenderer spriteRenderer
+    public SpriteRenderer spriteRenderer
     {
         get
         { if (_spriteRenderer == null)
@@ -69,7 +69,7 @@ public class Ant : MonoBehaviour
                         yield break;                       
                     }
                     nextDestination = positions.Dequeue();
-                    if(HighlightLastRun && positions.Count <= 5)
+                    if(HighlightLastRun && positions.Count <= 3)
                     {
                         this.spriteRenderer.color = Color.green;
                     }

@@ -21,4 +21,9 @@ public class UIButtons : MonoBehaviour
             SimulationManager.instance.StopSimulation();
         }
     }
+
+    public void onHideAnts()
+    {
+        SimulationManager.instance.HideAllAnts();
+    }
 }

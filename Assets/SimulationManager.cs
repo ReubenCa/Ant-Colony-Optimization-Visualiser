@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class SimulationManager : MonoBehaviour
 {
@@ -78,7 +79,10 @@ public class SimulationManager : MonoBehaviour
     }
     private void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.W) || state == SimulationState.Running)
+        {
+            DrawPhermoneWeights();
+        }
         if (Input.GetMouseButtonDown(0) && cityBeingDragged == null)
         {
             Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -139,7 +143,7 @@ public class SimulationManager : MonoBehaviour
             return Phermones[key];
 
         Phermones[key] = MaxPheremone;
-        return MaxPheremone;
+        return (MaxPheremone + MinPheremone)/2;
     }
 
     private void SetPhermone(City city1, City city2, double value)
@@ -298,7 +302,20 @@ public class SimulationManager : MonoBehaviour
     }
     private void DrawPhermoneWeights()
     {
-
+        double highestphermone = double.MinValue;
+        foreach (KeyValuePair<(int, int), double> entry in Phermones)
+        {
+            highestphermone = entry.Value > highestphermone ? entry.Value : highestphermone;
+        }
+        foreach (KeyValuePair<(int, int), double> entry in Phermones)
+        {
+            City city1 = LiveCityList.Find(x => x.ID == entry.Key.Item1);
+            City city2 = LiveCityList.Find(x => x.ID == entry.Key.Item2);
+            if (city1 == null || city2 == null)
+                continue;
+            
+            Debug.DrawLine(city1.currentPosition, city2.currentPosition, Color.Lerp(Color.black, Color.white, (float)(entry.Value / highestphermone )));
+        }
     }
     private IEnumerator CalculateRoutes(double[] Distances, List<City>[] Routes, int NumerOfFrames, int numberofants, City[] cities)
     {
@@ -361,7 +378,13 @@ public class SimulationManager : MonoBehaviour
         return (distance, finalRoute);
     }
 
-
+    public void HideAllAnts()
+    {
+        foreach(Ant ant in Ant.AllAnts)
+        {
+            ant.spriteRenderer.enabled = false;
+        }
+    }
 }
 
 public enum SimulationState
