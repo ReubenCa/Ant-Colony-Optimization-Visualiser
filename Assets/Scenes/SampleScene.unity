@@ -985,12 +985,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b376514ad58894d8e17a1ec2af85d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 6
-  zoomSpeed: 3
+  panSpeed: 12
+  zoomSpeed: 4
   minY: -10
   maxY: 10
   minX: -10
   maxX: 10
+  MaxZoom: 15
+  MinZoom: 2
+  useMouseControls: 0
 --- !u!1001 &552796111
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -142,7 +142,7 @@ public class SimulationManager : MonoBehaviour
         if (Phermones.ContainsKey(key))
             return Phermones[key];
 
-        Phermones[key] = MaxPheremone;
+        Phermones[key] = (MaxPheremone + MinPheremone) / 2;
         return (MaxPheremone + MinPheremone)/2;
     }
 
