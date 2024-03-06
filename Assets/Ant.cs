@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class Ant : MonoBehaviour
 {
+
     const bool HighlightLastRun = true;
     SpriteRenderer _spriteRenderer;
     public SpriteRenderer spriteRenderer
@@ -20,6 +21,10 @@ public class Ant : MonoBehaviour
      public static List<Ant> AllAnts = new List<Ant>();
     public void Start()
     {
+        if(Random.Range(0f, 1f) > SimulationManager.instance.AntVisibility)
+        {
+            spriteRenderer.enabled = false;
+        }
         AllAnts.Add(this);
     }
     public void OnDestroy()
@@ -28,6 +33,7 @@ public class Ant : MonoBehaviour
     }
     public void WalkPath(Queue<City> path)
     {
+        
         //stop all previous walk coroutines
         StopAllCoroutines();
         //start walk coroutine
@@ -69,7 +75,7 @@ public class Ant : MonoBehaviour
                         yield break;                       
                     }
                     nextDestination = positions.Dequeue();
-                    if(HighlightLastRun && positions.Count <= 3)
+                    if(HighlightLastRun && positions.Count <= 3 && SimulationManager.instance.ColorNearlyFinishedAnts)
                     {
                         this.spriteRenderer.color = Color.green;
                     }

@@ -44,7 +44,10 @@ public class SimulationManager : MonoBehaviour
     }
 
     City cityBeingDragged;
-  
+
+    public HashSet<Wall> Walls = new HashSet<Wall>(5);
+
+    public double AntVisibility = 1;
 
    public void StopSimulation()
     {
@@ -79,7 +82,7 @@ public class SimulationManager : MonoBehaviour
     }
     private void Update()
     {
-        if(state == SimulationState.Running)
+        if (Phermones!= null)
         {
             DrawPhermoneWeights();
         }
@@ -130,7 +133,13 @@ public class SimulationManager : MonoBehaviour
 
     public double GetDistance(City city1, City city2)
     {
-        return Vector3.Distance(city1.currentPosition, city2.currentPosition);
+        int WallsHit = 0;
+        foreach(Wall wall in Walls)
+        {
+            if (wall.Intersectswith(city1.currentPosition, city2.currentPosition))
+                WallsHit++;
+        }
+        return Vector3.Distance(city1.currentPosition, city2.currentPosition) + 1000 * WallsHit;
     }
 
     Dictionary<(int, int), double> Phermones;
@@ -203,6 +212,11 @@ public class SimulationManager : MonoBehaviour
         List<City> BestSoFar;
         double bestDistanceSoFar = double.MaxValue;
         bool recordValid = false;
+   
+    
+    [SerializeField]
+    internal  bool ColorNearlyFinishedAnts;
+
     private IEnumerator RunSingleIteration(int numberofants, City[] cities)
     {
         Ant[] ants = new Ant[numberofants];
@@ -356,7 +370,11 @@ public class SimulationManager : MonoBehaviour
                     CityWeights[i] = 0;
                 else
                 {
-                    CityWeights[i] = System.Math.Pow(GetPhermone(CurrentCity, cities[i]), PhermoneWeight) * System.Math.Pow(1 / GetDistance(CurrentCity, cities[i]), DistanceWeight);
+                    CityWeights[i] = System.Math.Pow(
+                        GetPhermone(CurrentCity, cities[i]), 
+                        PhermoneWeight) * 
+                        System.Math.Pow(1 / GetDistance(CurrentCity, cities[i]),
+                        DistanceWeight);
                     defaultindex = i;
                 }
                 totalweight += CityWeights[i];
