@@ -245,13 +245,13 @@ public class SimulationManager : MonoBehaviour
             recordValid = true;
             bestDistanceSoFar = bestdistance;
             BestSoFar = Routes[bestindex];
-            lineRenderer.positionCount = BestSoFar.Count;
-            for (int i = 0; i < BestSoFar.Count; i++)
-            {
-                lineRenderer.SetPosition(i, BestSoFar[i].currentPosition);
-            }
+            //lineRenderer.positionCount = BestSoFar.Count;
+            //for (int i = 0; i < BestSoFar.Count; i++)
+            //{
+            //    lineRenderer.SetPosition(i, BestSoFar[i].currentPosition);
+            //}
          
-           Besttext.text = "Best Distance: " + (int)bestDistanceSoFar;
+        //   Besttext.text = "Best Distance: " + (int)bestDistanceSoFar;
         }
 
         if (depositMode == DepositMode.Standard)
@@ -328,7 +328,7 @@ public class SimulationManager : MonoBehaviour
             if (city1 == null || city2 == null)
                 continue;
             
-            Debug.DrawLine(city1.currentPosition, city2.currentPosition, Color.Lerp(Color.black, Color.white, (float)(entry.Value / highestphermone )));
+            Debug.DrawLine(city1.currentPosition, city2.currentPosition, Color.Lerp(Color.red, Color.green, (float)(entry.Value / highestphermone )));
         }
     }
     private IEnumerator CalculateRoutes(double[] Distances, List<City>[] Routes, int NumerOfFrames, int numberofants, City[] cities)
