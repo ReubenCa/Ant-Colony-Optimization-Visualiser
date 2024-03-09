@@ -26,4 +26,9 @@ public class UIButtons : MonoBehaviour
     {
         SimulationManager.instance.HideAllAnts();
     }
+
+    public void onToggleWall()
+    {
+        SimulationManager.instance.ToggleWall();    
+    }
 }

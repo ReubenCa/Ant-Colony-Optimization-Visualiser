@@ -11,6 +11,7 @@ public class SimulationManager : MonoBehaviour
 
     public  GameObject CityPrefab;
 
+    public GameObject WallPrefab;
     public TextMeshProUGUI Besttext;
 
     public double MinPheremone = 0.1;
@@ -82,6 +83,7 @@ public class SimulationManager : MonoBehaviour
     }
     private void Update()
     {
+        
         if (Phermones!= null)
         {
             DrawPhermoneWeights();
@@ -402,6 +404,27 @@ public class SimulationManager : MonoBehaviour
         {
             ant.spriteRenderer.enabled = false;
         }
+    }
+
+    bool WallOn = false;
+    public void ToggleWall()
+    {
+        if (WallOn)
+        {
+            foreach (Wall w in Walls)
+            {
+                Destroy(w.gameObject);
+            }
+        }
+        else
+        {
+            GameObject g = GameObject.Instantiate(WallPrefab);
+            Wall w = g.GetComponent<Wall>();
+            w.Set(8, 3, -10, 0);
+
+        }
+        WallOn = !WallOn;
+        recordValid = false;
     }
 }
 

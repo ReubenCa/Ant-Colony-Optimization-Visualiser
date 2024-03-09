@@ -13,6 +13,16 @@ public class Wall : MonoBehaviour
     [SerializeField]
     private int Y2;
 
+    public void Set(int x1, int y1, int x2, int y2)
+    {
+        X1 = x1;
+        Y1 = y1;
+        X2 = x2;
+        Y2 = y2;
+    
+    
+    }
+
     public void Start()
     {
         SimulationManager.instance.Walls.Add(this);
