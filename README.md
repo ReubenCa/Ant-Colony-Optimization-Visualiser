@@ -1,1 +1,1 @@
-A quite Quick and Dirty implementation of some variants of ACO Algorithms for me to use as a demonstration during a talk. Intended to just be ran inside the Unity Editor.
+A quite Quick and Dirty implementation of some variants of ACO Algorithms for me to use as a demonstration during [my (award winning) talk](https://www.youtube.com/watch?v=Vt_uYWdSfSE). Intended to just be ran inside the Unity Editor.
